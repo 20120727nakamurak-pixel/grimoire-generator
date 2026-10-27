@@ -1,0 +1,450 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>禁忌詠唱録</title>
+<style>
+:root {
+  --bg:#0b0712; --panel:#191126; --line:#62438a;
+  --purple:#c4a0ff; --text:#f5edff; --muted:#b7a9ca;
+}
+* { box-sizing:border-box }
+body {
+  margin:0; background:radial-gradient(ellipse at top,#301448,var(--bg) 65%);
+  color:var(--text); font-family:system-ui,sans-serif; min-height:100vh;
+}
+main { max-width:850px; margin:auto; padding:22px 15px 45px }
+header { text-align:center; padding:20px 0 }
+header small { color:var(--purple); letter-spacing:4px }
+h1 { font-family:serif; font-size:clamp(2rem,7vw,3.6rem); margin:10px 0; text-shadow:0 0 25px #a855f7 }
+h2 { margin-top:0 }
+p { line-height:1.7 }
+.muted { color:var(--muted); font-size:.9rem }
+.panel { background:#191126ed; border:1px solid var(--line); border-radius:16px; padding:19px; margin:14px 0; box-shadow:0 12px 36px #0004 }
+.grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px }
+button,input { font:inherit }
+button {
+  border:1px solid #9870c7; border-radius:10px; padding:12px;
+  color:white; background:linear-gradient(135deg,#7139b5,#35184f);
+  cursor:pointer; font-weight:700;
+}
+button:hover { filter:brightness(1.2) }
+button:disabled { opacity:.45; cursor:not-allowed }
+.secondary { background:#21172e }
+.mode { text-align:left; min-height:155px }
+.mode strong { display:block; font-size:1.1rem; margin-bottom:8px }
+.mode span { color:#e0d2f4; font-size:.9rem; font-weight:400; line-height:1.6 }
+input {
+  display:block; width:100%; padding:13px; margin:9px 0 13px;
+  color:white; background:#0c0812; border:1px solid #70528f;
+  border-radius:9px; outline:none;
+}
+input:focus { border-color:#d8b4fe }
+.row { display:flex; gap:9px; flex-wrap:wrap }
+.row button { flex:1 }
+.stats { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:15px 0 }
+.stat { background:#0e0a16; padding:12px; border-radius:10px; border:1px solid #49335f; min-width:0 }
+.stat small { display:block; color:var(--muted); margin-bottom:7px }
+.stat strong { color:var(--purple); overflow-wrap:anywhere }
+.seal {
+  display:grid; place-items:center; margin:8px auto 18px;
+  width:84px; height:84px; border:2px solid var(--purple);
+  border-radius:50%; font-size:2.3rem; color:var(--purple);
+  box-shadow:0 0 26px #9333ea66,inset 0 0 20px #9333ea44;
+}
+.hidden { display:none !important }
+.tag { display:inline-block; border:1px solid #79559d; border-radius:20px; padding:4px 9px; color:var(--purple); font-size:.8rem }
+.arena {
+  display:flex; align-items:center; justify-content:space-around; gap:8px;
+  min-height:205px; border-radius:12px; padding:18px;
+  background:linear-gradient(#17162f,#29213d 63%,#30462d 63%,#1c2b21);
+  border:1px solid #53436c; text-align:center;
+}
+.hero { font-size:2.6rem; image-rendering:pixelated }
+.slime {
+  position:relative; width:78px; height:51px; margin:12px auto;
+  background:#7ce66c; border:5px solid #265238;
+  border-radius:50% 50% 30% 30%; box-shadow:inset -9px -7px #43a950;
+}
+.slime:before {
+  content:""; position:absolute; top:15px; left:15px;
+  width:8px; height:11px; background:#17312b;
+  box-shadow:29px 0 #17312b;
+}
+.slime:after {
+  content:""; position:absolute; top:31px; left:31px;
+  width:8px; height:4px; background:#265238;
+}
+.boss { background:#d14b69; border-color:#6c173f; box-shadow:inset -9px -7px #9f234a }
+.hpbar { height:11px; border-radius:10px; background:#4d273d; overflow:hidden; margin:6px 0 }
+.hpfill { height:100%; width:100%; background:#fb7185; transition:width .25s }
+.log { background:#0c0813; padding:13px; border:1px solid #443153; border-radius:10px; line-height:1.7; min-height:52px; margin-top:12px }
+footer { text-align:center; color:#80728f; font-size:.8rem; padding-top:20px }
+@media(max-width:520px) {
+  .grid { grid-template-columns:1fr }
+  .stats { grid-template-columns:1fr 1fr }
+  .arena { min-height:175px }
+  .panel { padding:14px }
+}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <small>GRIMOIRE GENERATOR</small>
+  <h1>禁忌詠唱録</h1>
+  <p class="muted">その名に秘められし力を、解き放て。</p>
+</header>
+
+<section id="home" class="panel">
+  <h2>試練を選択せよ</h2>
+  <div class="grid">
+    <button class="mode" onclick="startMode('story')">
+      <strong>Ⅰ. ストーリーモード</strong>
+      <span>敵ごとに新たな呪文を作り、魔物たちを攻略する。</span>
+    </button>
+    <button class="mode" onclick="startMode('challenge')">
+      <strong>Ⅱ. チャレンジモード</strong>
+      <span>最初に登録した一つの呪文だけで、限界に挑む。</span>
+    </button>
+  </div>
+  <p class="muted">能力値はゲーム独自のルールで決定されます。外部AIへの接続は不要です。</p>
+</section>
+
+<section id="setup" class="panel hidden">
+  <span class="tag" id="modeTag"></span>
+  <h2 id="setupTitle">禁忌の名を入力せよ</h2>
+  <p id="setupInfo" class="muted"></p>
+  <label for="spellInput">呪文名（1〜50文字）</label>
+  <input id="spellInput" maxlength="50" placeholder="例：終焉を告げる第十三の魔王">
+  <div class="row">
+    <button onclick="analyze()">呪文を解析</button>
+    <button class="secondary" onclick="goHome()">戻る</button>
+  </div>
+
+  <div id="result" class="hidden">
+    <div class="seal">✧</div>
+    <h2 id="resultName" style="text-align:center"></h2>
+    <div class="stats">
+      <div class="stat"><small>基礎威力</small><strong id="power"></strong></div>
+      <div class="stat"><small>属性</small><strong id="element"></strong></div>
+      <div class="stat"><small>特殊能力</small><strong id="ability"></strong></div>
+    </div>
+    <p id="lore"></p>
+    <button style="width:100%" onclick="confirmSpell()">この呪文で戦闘開始</button>
+  </div>
+</section>
+
+<section id="battle" class="panel hidden">
+  <span class="tag" id="battleTag"></span>
+  <h2 id="battleTitle">異界の草原</h2>
+  <div class="arena">
+    <div><div class="hero">🧙</div><small>詠唱者</small></div>
+    <div style="color:#d8b4fe;font-weight:900">VS</div>
+    <div>
+      <div id="monster" class="slime"></div>
+      <strong id="enemyName">スライム</strong>
+      <div class="hpbar"><div id="enemyBar" class="hpfill"></div></div>
+      <small id="enemyHP"></small>
+    </div>
+  </div>
+  <div class="panel">
+    <strong id="activeSpell"></strong>
+    <p class="muted" id="activeInfo"></p>
+    <div class="hpbar"><div id="playerBar" class="hpfill" style="background:#86efac"></div></div>
+    <small id="playerHP"></small>
+  </div>
+  <button id="attackBtn" style="width:100%" onclick="attack()">✦ 呪文を発動</button>
+  <div id="battleLog" class="log" aria-live="polite">魔物が現れた！</div>
+  <div class="row" style="margin-top:12px">
+    <button id="nextBtn" class="hidden" onclick="nextStep()">次へ進む</button>
+    <button class="secondary" onclick="goHome()">モード選択へ</button>
+  </div>
+</section>
+
+<footer>禁忌詠唱録 · Prototype 0.1</footer>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+
+const enemies = [
+  {name:"スライム",hp:100,atk:8,weak:"炎",resist:"氷"},
+  {name:"虚無の亡霊",hp:180,atk:14,weak:"光",resist:"闇"},
+  {name:"紅蓮の騎士",hp:290,atk:19,weak:"氷",resist:"炎"},
+  {name:"終末の魔王",hp:450,atk:25,weak:"光",resist:"闇"}
+];
+
+const elements = ["闇","炎","氷","雷","光","虚無"];
+const abilities = ["魔力増幅","属性貫通","連鎖詠唱","運命改変","概念召喚","絶対領域"];
+
+let mode = "story";
+let spell = null;
+let enemyIndex = 0;
+let enemyHp = 0;
+let playerHp = 100;
+let wins = 0;
+let turnEnded = false;
+let runEnded = false;
+let challengeEnemies = [];
+
+function showScreen(id) {
+  ["home","setup","battle"].forEach(name =>
+    $(name).classList.toggle("hidden",name !== id)
+  );
+}
+
+function hashText(text) {
+  let h = 2166136261;
+  for (const ch of text) {
+    h ^= ch.codePointAt(0);
+    h = Math.imul(h,16777619);
+  }
+  return h >>> 0;
+}
+
+function startMode(selected) {
+  mode = selected;
+  spell = null;
+  enemyIndex = 0;
+  wins = 0;
+  playerHp = 100;
+  runEnded = false;
+  challengeEnemies = [];
+  $("spellInput").value = "";
+  $("result").classList.add("hidden");
+  $("modeTag").textContent =
+    mode === "story" ? "STORY MODE" : "CHALLENGE MODE";
+  $("setupTitle").textContent =
+    mode === "story" ? "次の敵に放つ呪文を考えよ" : "唯一の呪文を登録せよ";
+  $("setupInfo").textContent =
+    mode === "story"
+      ? "敵の弱点を見極め、戦闘ごとに呪文を作り直そう。"
+      : "威力・属性・特殊能力は開始時に確定。挑戦中は変更も成長もしない。";
+  showScreen("setup");
+}
+
+function analyze() {
+  const name = $("spellInput").value.trim();
+  if (!name) {
+    $("spellInput").focus();
+    return;
+  }
+
+  const h = hashText(name);
+  const chars = Array.from(name);
+  const elementHints = {
+    "闇":"闇","黒":"闇","影":"闇","滅":"闇",
+    "炎":"炎","焔":"炎","火":"炎",
+    "氷":"氷","雪":"氷","凍":"氷",
+    "雷":"雷","電":"雷",
+    "光":"光","聖":"光","神":"光",
+    "虚":"虚無","無":"虚無","零":"虚無"
+  };
+
+  let element = elements[h % elements.length];
+  for (const char of chars) {
+    if (elementHints[char]) {
+      element = elementHints[char];
+      break;
+    }
+  }
+
+  let power = 25 + (h % 56) + Math.min(chars.length * 2,24);
+  let ability = abilities[(h >>> 5) % abilities.length];
+
+  // イースターエッグ：母なる存在の名
+  if (/my mother|母親|母なる|ママ/i.test(name)) {
+    power = Math.max(power,92);
+    element = "光";
+    ability = "原初の庇護";
+  }
+
+  if (/終焉|滅|魔王|神/.test(name)) {
+    power = Math.min(100,power + 12);
+  }
+
+  spell = Object.freeze({
+    name, power, element, ability, seed:h
+  });
+
+  $("resultName").textContent = name;
+  $("power").textContent = power;
+  $("element").textContent = element;
+  $("ability").textContent = ability;
+  $("lore").textContent = getLore(spell);
+  $("result").classList.remove("hidden");
+}
+
+function getLore(s) {
+  const descriptions = {
+    "闇":"影の底から対象の存在を侵食する禁忌の力。",
+    "炎":"万物を灰へと還す、燃え盛る魔力。",
+    "氷":"時の流れすら凍てつかせる絶対零度。",
+    "雷":"天蓋を裂く閃光が裁きを下す。",
+    "光":"万象を照らす聖なる力。抗う者の罪を暴く。",
+    "虚無":"存在の意味そのものを削り取る空白。"
+  };
+  return "属性「" + s.element + "」。" + descriptions[s.element] +
+    " 特殊能力「" + s.ability + "」を確認。";
+}
+
+function confirmSpell() {
+  if (!spell) return;
+
+  if (mode === "story") {
+    playerHp = 100;
+  } else if (enemyIndex === 0) {
+    // チャレンジ開始時に呪文能力を固定する。
+    playerHp = 100;
+    wins = 0;
+    challengeEnemies = [];
+  }
+
+  runEnded = false;
+  loadEnemy();
+  showScreen("battle");
+}
+
+function currentEnemy() {
+  if (mode === "story") return enemies[enemyIndex];
+
+  if (enemyIndex < enemies.length) return enemies[enemyIndex];
+
+  const n = enemyIndex - enemies.length + 1;
+  return {
+    name:["深淵の観測者","名もなき終末","禁域の王"][n % 3],
+    hp:450 + n * 130,
+    atk:25 + n * 3,
+    weak:elements[n % elements.length],
+    resist:elements[(n + 2) % elements.length]
+  };
+}
+
+function loadEnemy() {
+  const e = currentEnemy();
+  enemyHp = e.hp;
+  turnEnded = false;
+
+  $("battleTag").textContent =
+    mode === "story" ? "STORY MODE" : "FIXED SPELL CHALLENGE";
+  $("battleTitle").textContent =
+    mode === "story"
+      ? "試練 " + (enemyIndex + 1) + " / " + enemies.length
+      : "第 " + (wins + 1) + " 戦";
+  $("enemyName").textContent = e.name;
+  $("monster").className =
+    "slime" + (enemyIndex >= 3 ? " boss" : "");
+  $("enemyBar").style.width = "100%";
+  $("enemyHP").textContent = "HP " + enemyHp + " / " + e.hp;
+  $("playerBar").style.width = playerHp + "%";
+  $("playerHP").textContent = "あなたのHP " + playerHp + " / 100";
+  $("activeSpell").textContent = spell.name;
+  $("activeInfo").textContent =
+    "威力 " + spell.power + " / 属性 " + spell.element +
+    " / 特殊能力 " + spell.ability +
+    (mode === "challenge" ? "（固定・変更不可）" : "");
+  $("battleLog").textContent =
+    e.name + "が現れた！ 弱点：" + e.weak + "／耐性：" + e.resist;
+  $("attackBtn").disabled = false;
+  $("nextBtn").classList.add("hidden");
+}
+
+function attack() {
+  if (turnEnded || runEnded || !spell) return;
+
+  const e = currentEnemy();
+  let damage = spell.power;
+
+  if (spell.element === e.weak) damage = Math.round(damage * 1.7);
+  if (spell.element === e.resist) damage = Math.round(damage * 0.55);
+  if (spell.ability === "属性貫通") damage = Math.round(damage * 1.25);
+  if (spell.ability === "魔力増幅") damage = Math.round(damage * 1.2);
+
+  if (spell.ability === "運命改変" && spell.seed % 7 === 0) {
+    damage = enemyHp;
+  }
+  if (spell.ability === "概念召喚" && spell.seed % 5 === 0) {
+    damage = enemyHp;
+  }
+  if (spell.ability === "原初の庇護") damage = Math.max(damage,100);
+
+  damage = Math.max(1,Math.round(damage));
+  enemyHp = Math.max(0,enemyHp-damage);
+
+  $("enemyBar").style.width = (enemyHp / e.hp * 100) + "%";
+  $("enemyHP").textContent = "HP " + enemyHp + " / " + e.hp;
+
+  if (enemyHp <= 0) {
+    wins++;
+    turnEnded = true;
+    $("battleLog").textContent =
+      "「" + spell.name + "」が炸裂！ " + damage +
+      " ダメージ！ " + e.name + "を撃破した！";
+    $("attackBtn").disabled = true;
+    $("nextBtn").classList.remove("hidden");
+    $("nextBtn").textContent = mode === "story" &&
+      enemyIndex === enemies.length - 1 ? "物語クリア" : "次の敵へ";
+    return;
+  }
+
+  // 敵の反撃
+  playerHp = Math.max(0,playerHp-e.atk);
+  $("playerBar").style.width = playerHp + "%";
+  $("playerHP").textContent = "あなたのHP " + playerHp + " / 100";
+
+  if (playerHp <= 0) {
+    turnEnded = true;
+    runEnded = true;
+    $("battleLog").textContent =
+      e.name + "の反撃で倒れてしまった…… 撃破数：" + wins;
+    $("attackBtn").disabled = true;
+    $("nextBtn").classList.remove("hidden");
+    $("nextBtn").textContent = "再挑戦";
+  } else {
+    $("battleLog").textContent =
+      "「" + spell.name + "」で " + damage +
+      " ダメージ！ " + e.name + "の残りHP：" + enemyHp +
+      "。反撃を受け、HPが " + playerHp + " になった。";
+  }
+}
+
+function nextStep() {
+  if (runEnded) {
+    startMode(mode);
+    return;
+  }
+
+  if (mode === "story") {
+    if (enemyIndex >= enemies.length - 1) {
+      $("battleTitle").textContent = "ストーリークリア";
+      $("battleLog").textContent =
+        "全ての試練を突破した！ 撃破数：" + wins +
+        "。おめでとう、詠唱者よ！";
+      $("nextBtn").classList.add("hidden");
+      $("attackBtn").classList.add("hidden");
+      return;
+    }
+
+    enemyIndex++;
+    startMode("story");
+    $("setupInfo").textContent =
+      "次の敵：" + enemies[enemyIndex].name +
+      "。弱点は「" + enemies[enemyIndex].weak +
+      "」。新しい呪文を入力できる。";
+  } else {
+    enemyIndex++;
+    loadEnemy();
+  }
+}
+
+function goHome() {
+  spell = null;
+  $("attackBtn").classList.remove("hidden");
+  showScreen("home");
+}
+</script>
+</body>
+</html>
